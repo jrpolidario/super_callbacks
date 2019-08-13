@@ -316,12 +316,12 @@ foo.bar
 
 sub_foo = SubFoo.new
 sub_foo.bar
-# => 'SubFoo: bar'
 # => 'Foo: before bar 1!'
+# => 'SubFoo: bar'
 # => 'bar!'
 ```
 
-*Notice above `sub_foo` calls both `before` callbacks defined in `Foo` and `SubFoo`, because SubFoo inherits from Foo. Callbacks are called in order of ancestors ascending; meaning it starts calling the instance's class (SubFoo) callbacks first, then the superclass's callbacks, and the remaining ancestor classes, etc...*
+*Notice above `sub_foo` calls both `before` callbacks defined in `Foo` and `SubFoo`, because SubFoo inherits from Foo. Callbacks are called in order of ancestors descending; meaning it starts calling the top-level ancestor superclass callbacks, and then calling its subclass callbacks, until it reaches the instance's class callbacks*
 *Above uses `before`, but works similarly with `after`*
 
 

@@ -147,7 +147,7 @@ module SuperCallbacks
     # TODO: optimize by instead of dynamically getting all_ancestral_after_callbacks on runtime
     # set them immediately when `include` is called on Base class
     def run_before_callbacks(method_name, *args)
-      all_ancestral_before_callbacks = self.class.ancestors.each_with_object({}) do |ancestor, hash|
+      all_ancestral_before_callbacks = self.class.ancestors.reverse.each_with_object({}) do |ancestor, hash|
         SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays!(
           hash,
           ancestor.instance_variable_get(:@before_callbacks) || {}
@@ -183,7 +183,7 @@ module SuperCallbacks
     # TODO: optimize by instead of dynamically getting all_ancestral_after_callbacks on runtime
     # set them immediately when `include` is called on Base class
     def run_after_callbacks(method_name, *args)
-      all_ancestral_after_callbacks = self.class.ancestors.each_with_object({}) do |ancestor, hash|
+      all_ancestral_after_callbacks = self.class.ancestors.reverse.each_with_object({}) do |ancestor, hash|
         SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays!(
           hash,
           ancestor.instance_variable_get(:@after_callbacks) || {}
