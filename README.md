@@ -344,8 +344,8 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-* 1.0.0 (2019-08-12)
-    * Cleaner code without explicitly calling `run_callbacks` anymore; done now because of ruby upgrade from 1.9 to 2.0+ which already supports `prepend` 
+* 1.0.1 (2019-08-12)
+    * Cleaner code without explicitly calling `run_callbacks` anymore; done now because of ruby upgrade from 1.9 to 2.0+ which already supports `prepend`
     * Supported both class and instance level callbacks
     * Supported inherited callbacks
 * v0.2.1 (2019-08-09) *From `dragonruby_callbacks`*

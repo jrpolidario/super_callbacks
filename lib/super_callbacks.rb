@@ -6,8 +6,8 @@ module SuperCallbacks
   VALID_OPTION_KEYS = [:if].freeze
 
   def self.included(base)
-    base.singleton_class.attr_accessor :before_callbacks, :after_callbacks
-    base.attr_accessor :before_callbacks, :after_callbacks
+    base.singleton_class.send(:attr_accessor, *[:before_callbacks, :after_callbacks])
+    base.send(:attr_accessor, *[:before_callbacks, :after_callbacks])
     base.extend ClassMethods
     base.include InstanceMethods
     base.extend ClassAndInstanceMethods
