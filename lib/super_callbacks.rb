@@ -12,7 +12,7 @@ module SuperCallbacks
     base.send :include, InstanceMethods
     base.extend ClassAndInstanceMethods
     base.send :include, ClassAndInstanceMethods
-    base.prepend Prepended.new
+    base.send :prepend, Prepended.new
   end
 
   class Prepended < Module
