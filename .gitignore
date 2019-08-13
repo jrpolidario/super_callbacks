@@ -9,3 +9,10 @@
 
 # rspec failure tracking
 .rspec_status
+
+.byebug_history
+
+*.gem
+
+Gemfile.lock
+gemfiles/*.lock
