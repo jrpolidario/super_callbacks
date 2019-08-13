@@ -285,7 +285,7 @@ foo_2.bar
 # => 'bar!'
 ```
 
-*Notice above that foo_1 and foo_2 both call the class-level callbacks, while they have independent (not-shared) instance-level callbacks defined: foo_2. Order of execution is class-level first then instance-level, of which defined callbacks are then in order of first-come-first-serve.*
+*Notice above that foo_1 and foo_2 both call the class-level callbacks, while they have independent (not-shared) instance-level callbacks defined. Order of execution is class-level first then instance-level, of which defined callbacks are then in order of first-come-first-serve.*
 *Above uses `before`, but works similarly with `after`*
 
 ### Example 8 (Inherited Callbacks)
@@ -344,7 +344,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-* 1.0.1 (2019-08-12)
+* 1.0.2 (2019-08-12)
     * Cleaner code without explicitly calling `run_callbacks` anymore; done now because of ruby upgrade from 1.9 to 2.0+ which already supports `prepend`
     * Supported both class and instance level callbacks
     * Supported inherited callbacks

@@ -1,8 +1,6 @@
 require 'super_callbacks/version'
 
 module SuperCallbacks
-  VERSION = '1.0.0'.freeze
-
   VALID_OPTION_KEYS = [:if].freeze
 
   def self.included(base)
@@ -20,27 +18,11 @@ module SuperCallbacks
 
   module Helpers
     # (modified) File activesupport/lib/active_support/core_ext/hash/deep_merge.rb, line 18
-    def self.deep_merge_hashes(this_hash, other_hash, &block)
-      deep_merge_hashes!(this_hash.dup, other_hash, &block)
-    end
-
-    # (modified) File activesupport/lib/active_support/core_ext/hash/deep_merge.rb, line 23
-    def self.deep_merge_hashes!(this_hash, other_hash, &block)
-      this_hash.merge!(other_hash) do |key, this_val, other_val|
-        if this_val.is_a?(Hash) && other_val.is_a?(Hash)
-          self.deep_merge_hashes(this_val, other_val, &block)
-        elsif block_given?
-          block.call(key, this_val, other_val)
-        else
-          other_val
-        end
-      end
-    end
-
     def self.deep_merge_hashes_and_combine_arrays(this_hash, other_hash, &block)
       self.deep_merge_hashes_and_combine_arrays!(this_hash.dup, other_hash, &block)
     end
 
+    # (modified) File activesupport/lib/active_support/core_ext/hash/deep_merge.rb, line 23
     def self.deep_merge_hashes_and_combine_arrays!(this_hash, other_hash, &block)
       this_hash.merge!(other_hash) do |key, this_val, other_val|
         if this_val.is_a?(Hash) && other_val.is_a?(Hash)
