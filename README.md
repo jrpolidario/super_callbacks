@@ -285,7 +285,7 @@ foo_2.bar
 # => 'bar!'
 ```
 
-*Notice above that foo_1 and foo_2 both call the class-level callbacks, while they have independent (not-shared) instance-level callbacks defined: foo_2. Order of execution is class-level first then instance-level, of which defined callbacks are then in order of first-come-first-serve.
+*Notice above that foo_1 and foo_2 both call the class-level callbacks, while they have independent (not-shared) instance-level callbacks defined: foo_2. Order of execution is class-level first then instance-level, of which defined callbacks are then in order of first-come-first-serve.*
 *Above uses `before`, but works similarly with `after`*
 
 ### Example 8 (Inherited Callbacks)
@@ -321,7 +321,7 @@ sub_foo.bar
 # => 'bar!'
 ```
 
-*Notice above `sub_foo` calls both `before` callbacks defined in `Foo` and `SubFoo`, because SubFoo inherits from Foo. Callbacks are called in order of ancestors ascending; meaning it starts calling the instance's class (SubFoo) callbacks first, then the superclass's callbacks, and the remaining ancestor classes, etc...
+*Notice above `sub_foo` calls both `before` callbacks defined in `Foo` and `SubFoo`, because SubFoo inherits from Foo. Callbacks are called in order of ancestors ascending; meaning it starts calling the instance's class (SubFoo) callbacks first, then the superclass's callbacks, and the remaining ancestor classes, etc...*
 *Above uses `before`, but works similarly with `after`*
 
 
