@@ -88,8 +88,8 @@ module SuperCallbacks
       _callbacks_prepended_module_instance = callbacks_prepended_module_instance
 
       # dont redefine, to save cpu cycles
-      unless callbacks_prepended_module_instance.method_defined? method_name
-        callbacks_prepended_module_instance.define_method method_name do |*args|
+      unless _callbacks_prepended_module_instance.method_defined? method_name
+        _callbacks_prepended_module_instance.send(:define_method, method_name) do |*args|
           run_before_callbacks(method_name, *args)
           super_value = super(*args)
           run_after_callbacks(method_name, *args)
@@ -120,7 +120,7 @@ module SuperCallbacks
 
       # dont redefine, to save cpu cycles
       unless _callbacks_prepended_module_instance.method_defined? method_name
-        _callbacks_prepended_module_instance.define_method method_name do |*args|
+        _callbacks_prepended_module_instance.send(:define_method, method_name) do |*args|
           run_before_callbacks(method_name, *args)
           super_value = super(*args)
           run_after_callbacks(method_name, *args)
