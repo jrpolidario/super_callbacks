@@ -42,14 +42,14 @@ module SuperCallbacks
   end
 
   module ClassAndInstanceMethods
-    def before!(method_name, *remaining_args)
+    def before!(method_name, *remaining_args, &callback_proc)
       raise ArgumentError, "`#{method_name}` is not or not yet defined for #{self}" unless method_defined? method_name
-      before(method_name, *remaining_args)
+      before(method_name, *remaining_args, &callback_proc)
     end
 
-    def after!(method_name, *remaining_args)
+    def after!(method_name, *remaining_args, &callback_proc)
       raise ArgumentError, "`#{method_name}` is not or not yet defined for #{self}" unless method_defined? method_name
-      after(method_name, *remaining_args)
+      after(method_name, *remaining_args, &callback_proc)
     end
 
     def before(method_name, callback_method_name = nil, options = {}, &callback_proc)
