@@ -345,4 +345,52 @@ RSpec.describe SuperCallbacks do
     super_callbacks_prepended_modules = klass.ancestors.select { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
     expect(super_callbacks_prepended_modules.size).to eq 1
   end
+
+  it 'runs the callbacks in correct order when the method is defined in the subclass', :focus do
+    skip 'All attempts so far failed. Not a priority at the moment; so I will come back into this, or if you have any ideas, feel free to let me know or submit a merge request!'
+
+    base_class = Class.new do
+      include SuperCallbacks
+
+      attr_accessor :test_string_sequence
+
+      def initialize
+        @test_string_sequence = []
+      end
+
+      before :bar, :say_hi_first
+      after :bar, :say_goodbye
+
+      def bar
+        @test_string_sequence << 'bar'
+      end
+
+      def say_hi_first
+        @test_string_sequence << 'Hi'
+      end
+
+      def say_goodbye
+        @test_string_sequence << 'Goodbye'
+      end
+    end
+
+    sub_class = Class.new(base_class) do
+      def bar
+        @test_string_sequence << 'sub class'
+        super
+      end
+    end
+
+    sub_sub_class = Class.new(sub_class) do
+      def bar
+        @test_string_sequence << 'sub sub class'
+        super
+      end
+    end
+
+    instance = sub_sub_class.new
+    instance.bar
+
+    expect(instance.test_string_sequence).to eq ['Hi', 'sub sub class', 'sub class', 'bar', 'Goodbye']
+  end
 end
