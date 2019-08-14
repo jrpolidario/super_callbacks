@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Jules Roman B. Polidario']
   spec.email         = ['jules@topfloor.ie']
 
-  spec.summary       = 'Allows `before` and `after` callbacks to any Class. Supports both class and instance level callbacks, conditional callbacks, and inherited callbacks.'
-  spec.description   = 'Allows `before` and `after` callbacks to any Class. Supports both class and instance level callbacks, conditional callbacks, and inherited callbacks. Focuses on performance and flexibility as intended primarily for game development, and event-driven apps.'
+  spec.summary       = 'Allows `before` and `after` callbacks to any Class. Supports dirty checking of instance variables changes, class and instance level callbacks, conditional callbacks, and inherited callbacks.'
+  spec.description   = 'Allows `before` and `after` callbacks to any Class. Supports dirty checking of instance variables changes, class and instance level callbacks, conditional callbacks, and inherited callbacks. Focuses on performance and flexibility as intended primarily for game development, and event-driven apps.'
   spec.homepage      = 'https://github.com/jrpolidario/super_callbacks'
   spec.license       = 'MIT'
 

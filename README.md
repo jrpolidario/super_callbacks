@@ -4,9 +4,9 @@
 [![Gem Version](https://badge.fury.io/rb/super_callbacks.svg)](https://badge.fury.io/rb/super_callbacks)
 
 * Allows `before` and `after` callbacks to any Class.
+* Supports "dirty" checking of instance variables changes
 * Supports both class and instance level callbacks
 * Supports conditional callbacks
-* Supports "dirty" checking of instance variable changes
 * Supports inherited callbacks; hence named "Super", get it? :D haha!
 ---
 * Focuses on performance and flexibility as intended primarily for game development, and event-driven apps
