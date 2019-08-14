@@ -346,7 +346,7 @@ RSpec.describe SuperCallbacks do
     expect(super_callbacks_prepended_modules.size).to eq 1
   end
 
-  it 'runs the callbacks in correct order when the method is defined in the subclass', :focus do
+  it 'runs the callbacks in correct order when the method is defined in the subclass' do
     skip 'All attempts so far failed. Not a priority at the moment; so I will come back into this, or if you have any ideas, feel free to let me know or submit a merge request!'
 
     base_class = Class.new do
