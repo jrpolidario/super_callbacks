@@ -139,14 +139,14 @@ module SuperCallbacks
     def instance_variable_before_change(instance_variable)
       raise ArgumentError, "#{instance_variable} should be a string that starts with `@`" unless instance_variable.to_s.start_with? '@'
       raise 'You cannot call this method outside the SuperCallback cycle' if instance_variables_before_change.nil?
-      instance_variables_before_change[instance_variable]
+      instance_variables_before_change[instance_variable.to_sym]
     end
 
     def instance_variable_changed?(instance_variable)
       raise ArgumentError, "#{instance_variable} should be a string that starts with `@`" unless instance_variable.to_s.start_with? '@'
       raise 'You cannot call this method outside the SuperCallback cycle' if instance_variables_before_change.nil?
 
-      before_change_value = instance_variable_before_change(instance_variable)
+      before_change_value = instance_variable_before_change(instance_variable.to_sym)
       current_value = instance_variable_get(instance_variable)
       before_change_value != current_value
     end
