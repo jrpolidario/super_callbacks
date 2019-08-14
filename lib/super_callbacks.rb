@@ -49,7 +49,7 @@ module SuperCallbacks
 
     def after!(method_name, *remaining_args)
       raise ArgumentError, "`#{method_name}` is not or not yet defined for #{self}" unless method_defined? method_name
-      before(method_name, *remaining_args)
+      after(method_name, *remaining_args)
     end
 
     def before(method_name, callback_method_name = nil, options = {}, &callback_proc)
