@@ -425,7 +425,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-* 1.1.0 (2019-08-14)
+* 1.1.1 (2019-08-14)
     * [Supported "dirty" checking of instance variable changes](#example-10-dirty-checking-of-instance-variables-changes)
 * 1.0.3 (2019-08-12)
     * Cleaner code without explicitly calling `run_callbacks` anymore; done now because of ruby upgrade from 1.9 to 2.0+ which already supports `prepend`
