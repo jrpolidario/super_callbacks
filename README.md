@@ -6,6 +6,7 @@
 * Allows `before` and `after` callbacks to any Class.
 * Supports both class and instance level callbacks
 * Supports conditional callbacks
+* Supports "dirty" checking of instance variable changes
 * Supports inherited callbacks; hence named "Super", get it? :D haha!
 ---
 * Focuses on performance and flexibility as intended primarily for game development, and event-driven apps
@@ -22,7 +23,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'super_callbacks', '~> 1.0'
+gem 'super_callbacks', '~> 1.1'
 ```
 
 And then execute:
@@ -363,6 +364,47 @@ end
 
 *Above uses `after!`, but works similarly with `before!`*
 
+### Example 10 (Dirty Checking of Instance Variables Changes)
+
+```ruby
+class Foo
+  include SuperCallbacks
+
+  attr_accessor :bar, :baz
+
+  after :bar= do |arg|
+    puts 'original values of all instance attributes:'
+    puts instance_variables_before_change
+
+    puts 'original value:'
+    puts instance_variable_before_change :@bar
+
+    if instance_variable_changed? :@bar
+      puts 'new value'
+      @arg
+    end
+  end
+end
+
+foo = Foo.new
+foo.bar = 1 # bar is changed from nil to 1
+# => original values of all instance attributes:
+# => {}
+# => original value:
+# => nil
+# => new value:
+# => 1
+foo.bar = 1 # bar is not changed from 1 to 1
+# => original values of all instance attributes:
+# => { :@bar => 1 }
+# => original value:
+# => 1
+```
+
+*Notice above on the second time `foo.bar = 1` is called, "new value" was no longer "puts", because `@bar` didn't change from 1 to 1. You can only use `instance_variables_before_change`, instance_variable_before_change` and `instance_variable_changed?` inside the SuperCallback cycle; otherwise you will get a `"You cannot call this method outside the SuperCallback cycle"` error.
+
+*Above uses `after!`, but works similarly with `before!`*
+
 ## TODOs
 * when the need already arises, implement `around` (If you have ideas or want to help this part, please feel free to fork or send me a message! :)
 * [Found a new bug I could not solve](https://github.com/jrpolidario/super_callbacks/issues/1). If you have any ideas how to solve this, please feel to submit a merge request! :) At the moment, this is not important to me (yet?) as I develop my game engine, so I'm leaving this here for now, and I'll come back again into this later.
@@ -383,6 +425,8 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+* 1.1.0 (2019-08-14)
+    * [Supported "dirty" checking of instance variable changes](#example-10-dirty-checking-of-instance-variables-changes)
 * 1.0.3 (2019-08-12)
     * Cleaner code without explicitly calling `run_callbacks` anymore; done now because of ruby upgrade from 1.9 to 2.0+ which already supports `prepend`
     * Supported both class and instance level callbacks

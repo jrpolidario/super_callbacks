@@ -393,4 +393,94 @@ RSpec.describe SuperCallbacks do
 
     expect(instance.test_string_sequence).to eq ['Hi', 'sub sub class', 'sub class', 'bar', 'Goodbye']
   end
+
+  context 'after' do
+    it 'supports dirty checking of "changes" of instance variables values' do
+      klass = Class.new do
+        include SuperCallbacks
+
+        attr_accessor :test_string_sequence
+        attr_accessor :bar
+
+        def initialize
+          @test_string_sequence = []
+        end
+
+        after :bar=, :say_hi_first
+
+        def say_hi_first
+          if instance_variable_changed? :@bar
+            @test_string_sequence << 'Hi'
+          end
+        end
+      end
+
+      instance = klass.new
+
+      instance.bar = 1 # changed from nil to 1
+      expect(instance.test_string_sequence).to eq ['Hi']
+
+      instance.bar = 1 # not changed from 1 to 1
+      expect(instance.test_string_sequence).to eq ['Hi']
+
+      instance.bar = 2 # changed from 1 to 2
+      expect(instance.test_string_sequence).to eq ['Hi', 'Hi']
+    end
+  end
+
+  context 'before' do
+    it 'supports dirty checking of "changes" of instance variables values' do
+      klass = Class.new do
+        include SuperCallbacks
+
+        attr_accessor :test_string_sequence
+        attr_accessor :bar, :baz
+
+        def initialize
+          @test_string_sequence = []
+          @baz = 0
+        end
+
+        before :bar= do |arg|
+          if arg == true
+            self.baz += 1
+          end
+        end
+
+        before :bar= do |arg|
+          if instance_variable_changed? :@bar
+            @test_string_sequence << 'Hi'
+          end
+
+          if instance_variable_changed? :@baz
+            @test_string_sequence << 'Hello'
+          end
+        end
+      end
+
+      instance = klass.new
+
+      instance.bar = 1
+      # changed bar from nil to 1
+      #   but instance_variable_changed? :@bar would return false, because it's `before' hook`
+      # not changed baz from 0 to 0
+      expect(instance.test_string_sequence).to eq []
+
+      instance.bar = 1
+      # not changed bar from nil to nil
+      # not changed baz from 0 to 0
+      expect(instance.test_string_sequence).to eq []
+
+      instance.bar = true
+      # changed bar from nil to true
+      #   but instance_variable_changed? :@bar would return false, because it's `before' hook`
+      # changed baz from 0 to 1
+      expect(instance.test_string_sequence).to eq ['Hello']
+
+      instance.bar = true
+      # not changed bar from true to true
+      # changed baz from 1 to 2
+      expect(instance.test_string_sequence).to eq ['Hello', 'Hello']
+    end
+  end
 end
