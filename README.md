@@ -1,6 +1,7 @@
 # SuperCallbacks
 
 [![Build Status](https://travis-ci.org/jrpolidario/super_callbacks.svg?branch=master)](https://travis-ci.org/jrpolidario/super_callbacks)
+[![Gem Version](https://badge.fury.io/rb/super_callbacks.svg)](https://badge.fury.io/rb/super_callbacks)
 
 * Allows `before` and `after` callbacks to any Class.
 * Supports both class and instance level callbacks
@@ -344,7 +345,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-* 1.0.2 (2019-08-12)
+* 1.0.3 (2019-08-12)
     * Cleaner code without explicitly calling `run_callbacks` anymore; done now because of ruby upgrade from 1.9 to 2.0+ which already supports `prepend`
     * Supported both class and instance level callbacks
     * Supported inherited callbacks

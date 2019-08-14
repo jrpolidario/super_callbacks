@@ -4,6 +4,9 @@ module SuperCallbacks
   VALID_OPTION_KEYS = [:if].freeze
 
   def self.included(base)
+    # prevent re-including
+    return if base.ancestors.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
+
     base.singleton_class.send :attr_accessor, *[:before_callbacks, :after_callbacks]
     base.send :attr_accessor, *[:before_callbacks, :after_callbacks]
     base.extend ClassMethods

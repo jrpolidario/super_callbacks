@@ -332,4 +332,17 @@ RSpec.describe SuperCallbacks do
 
     expect(instance.bar).to eq 'bar'
   end
+
+  it 'prevents being re-included to a Class' do
+    klass = Class.new do
+      include SuperCallbacks
+      include SuperCallbacks
+      include SuperCallbacks
+      include SuperCallbacks
+      include SuperCallbacks
+    end
+
+    super_callbacks_prepended_modules = klass.ancestors.select { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
+    expect(super_callbacks_prepended_modules.size).to eq 1
+  end
 end
