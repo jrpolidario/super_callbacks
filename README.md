@@ -370,7 +370,7 @@ end
 class Foo
   include SuperCallbacks
 
-  attr_accessor :bar, :baz
+  attr_accessor :bar
 
   after :bar= do |arg|
     puts 'original values of all instance attributes:'
