@@ -107,6 +107,7 @@ foo.bar
 ```
 
 *Notice above that you can also call another method instead of supplying a block.*
+
 *Above uses `before`, but works similarly with `after`*
 
 ### Example 3 (Multiple Callbacks)
@@ -143,6 +144,7 @@ foo.bar
 ```
 
 *Notice above multiple callbacks are supported, and that they are called in firt-come-first-served order.*
+
 *Above uses `before`, but works similarly with `after`*
 
 ### Example 4 (Setter Method Callbacks)
@@ -287,6 +289,7 @@ foo_2.bar
 ```
 
 *Notice above that foo_1 and foo_2 both call the class-level callbacks, while they have independent (not-shared) instance-level callbacks defined. Order of execution is class-level first then instance-level, of which defined callbacks are then in order of first-come-first-serve.*
+
 *Above uses `before`, but works similarly with `after`*
 
 ### Example 8 (Inherited Callbacks)
@@ -323,8 +326,42 @@ sub_foo.bar
 ```
 
 *Notice above `sub_foo` calls both `before` callbacks defined in `Foo` and `SubFoo`, because SubFoo inherits from Foo. Callbacks are called in order of ancestors descending; meaning it starts calling the top-level ancestor superclass callbacks, and then calling its subclass callbacks, until it reaches the instance's class callbacks*
+
 *Above uses `before`, but works similarly with `after`*
 
+### Example 9 (Requiring Method To Be Defined)
+
+```ruby
+class Foo
+  include SuperCallbacks
+
+  after! :bar do
+    puts 'after bar!'
+  end
+
+  def bar
+    puts 'bar!'
+  end
+end
+# => ArgumentError: `bar` is not or not yet defined for Foo
+
+class Foo
+  include SuperCallbacks
+
+  def bar
+    puts 'bar!'
+  end
+
+  after! :bar do
+    puts 'after bar!'
+  end
+end
+# => [NO ERRORS]
+```
+
+*From above, sometimes I noticed that I forgot to define a method! So the bang `!` version is just basically like `after` except that this raises an error if `method_name` is not defined or not yet defined (at the time `after!` is called). This works perfect with `attr_accesors` I normally put them at the top of the lines of a Class, and so I can now safely call `before!` or `after!` because I am sure that I already defined everything I needed to define. If I forgot something then, this `before!` would raise an error and alert me, and not silently failing. Helps debugging :)*
+
+*Above uses `after!`, but works similarly with `before!`*
 
 ## TODOs
 * when the need already arises, implement `around` (If you have ideas or want to help this part, please feel free to fork or send me a message! :)
