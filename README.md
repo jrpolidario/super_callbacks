@@ -365,7 +365,7 @@ end
 
 ## TODOs
 * when the need already arises, implement `around` (If you have ideas or want to help this part, please feel free to fork or send me a message! :)
-* [Found a new bug I could not solve](https://github.com/jrpolidario/super_callbacks/blob/5e9eba7d357ef8db9bf9e33ba0ebf46492596d8e/spec/super_callbacks_spec.rb#L349). If you have any ideas how to solve this, please feel to submit a merge request! :) At the moment, this is not important to me (yet?) as I develop my game engine, so I'm leaving this here for now, and I'll come back again into this later.
+* [Found a new bug I could not solve](https://github.com/jrpolidario/super_callbacks/issues/1). If you have any ideas how to solve this, please feel to submit a merge request! :) At the moment, this is not important to me (yet?) as I develop my game engine, so I'm leaving this here for now, and I'll come back again into this later.
 
 ## Development
 
