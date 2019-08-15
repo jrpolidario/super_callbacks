@@ -35,7 +35,7 @@ module SuperCallbacks
         SuperCallbacks::InstanceMethods.instance_methods(false) +
         SuperCallbacks::InstanceMethods.private_instance_methods(false)
       )
-    )
+    ).sort
 
     unless overriden_instance_methods.empty?
       puts "WARN: SuperCallbacks will override #{base} the following already existing instance methods: #{overriden_instance_methods}"
@@ -50,7 +50,7 @@ module SuperCallbacks
         SuperCallbacks::ClassMethods.instance_methods(false) +
         SuperCallbacks::ClassMethods.private_instance_methods(false)
       )
-    )
+    ).sort
 
     unless overriden_class_methods.empty?
       puts "WARN: SuperCallbacks will override #{base} the following already existing class methods: #{overriden_class_methods}"
