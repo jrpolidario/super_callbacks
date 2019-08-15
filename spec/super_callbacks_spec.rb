@@ -483,4 +483,69 @@ RSpec.describe SuperCallbacks do
       expect(instance.test_string_sequence).to eq ['Hello', 'Hello']
     end
   end
+
+  context 'before' do
+    it 'tracks "changes" independently of callbacks when nestedly called' do
+      klass = Class.new do
+        include SuperCallbacks
+
+        # need this to be a class instance variable to test, otherwise expected StackLevel error
+        @test_string_sequence = []
+        singleton_class.send(:attr_accessor, :test_string_sequence)
+
+        attr_accessor :bar, :baz
+
+        after :bar= do |arg|
+          self.baz = 1
+        end
+
+        after :baz= do |arg|
+          self.class.test_string_sequence << instance_variables_before_change
+        end
+      end
+
+      instance = klass.new
+
+      instance.bar = true
+      # changed bar from nil to true
+      # which triggers baz= callback
+      expect(instance.class.test_string_sequence).to eq [{ :@bar => true }]
+    end
+  end
+
+  it 'puts warning message when SuperCallback instance methods already defined to prevent unexpected weird behaviours' do
+    klass = Class.new
+
+    expect do
+      klass.class_eval do
+        def before
+        end
+
+        def instance_variables_before_change
+        end
+
+        include SuperCallbacks
+      end
+    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing instance methods: " \
+      "[:before, :instance_variables_before_change]\n"
+    ).to_stdout
+  end
+
+  it 'puts warning message when SuperCallback class methods already defined to prevent unexpected weird behaviours' do
+    klass = Class.new
+
+    expect do
+      klass.class_eval do
+        def self.before
+        end
+
+        def self.callbacks_prepended_module_instance
+        end
+
+        include SuperCallbacks
+      end
+    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing class methods: " \
+      "[:before, :callbacks_prepended_module_instance]\n"
+    ).to_stdout
+  end
 end
