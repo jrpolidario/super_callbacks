@@ -98,7 +98,7 @@ module SuperCallbacks
             end
 
             Thread.current[:super_callbacks_all_instance_variables_before_change][object_id] << all_instance_variables_before_change
-            
+
             run_before_callbacks(method_name, *args)
             super_value = super(*args)
             run_after_callbacks(method_name, *args)
@@ -120,18 +120,18 @@ module SuperCallbacks
     end
 
     def instance_variables_before_change
-      raise 'You cannot call this method outside the SuperCallback cycle' if Thread.current[:super_callbacks_all_instance_variables_before_change].nil?
+      raise 'You cannot call this method outside the SuperCallbacks cycle' if Thread.current[:super_callbacks_all_instance_variables_before_change].nil?
       Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].last
     end
 
     def instance_variable_before_change(instance_variable)
-      raise 'You cannot call this method outside the SuperCallback cycle' if Thread.current[:super_callbacks_all_instance_variables_before_change].nil?
+      raise 'You cannot call this method outside the SuperCallbacks cycle' if Thread.current[:super_callbacks_all_instance_variables_before_change].nil?
       raise ArgumentError, "#{instance_variable} should be a string that starts with `@`" unless instance_variable.to_s.start_with? '@'
       instance_variables_before_change[instance_variable.to_sym]
     end
 
     def instance_variable_changed?(instance_variable)
-      raise 'You cannot call this method outside the SuperCallback cycle' if Thread.current[:super_callbacks_all_instance_variables_before_change].nil?
+      raise 'You cannot call this method outside the SuperCallbacks cycle' if Thread.current[:super_callbacks_all_instance_variables_before_change].nil?
       raise ArgumentError, "#{instance_variable} should be a string that starts with `@`" unless instance_variable.to_s.start_with? '@'
 
       before_change_value = instance_variable_before_change(instance_variable.to_sym)
