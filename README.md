@@ -23,7 +23,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'super_callbacks', '~> 1.1'
+gem 'super_callbacks', '~> 1.2'
 ```
 
 And then execute:
@@ -425,6 +425,10 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+* 1.2.0 (2019-08-15)
+    * [Fixed / Supported Nested "Dirty" Changes on nested callbacks for idempotency (Thread-safe)](https://github.com/jrpolidario/super_callbacks/blob/4e9284e1c6150c6d5da536766d51b4e635bb819d/spec/super_callbacks_spec.rb#L487)
+    * Housecleaning: segregated super_callbacks.rb into multiple files.
+    * Now puts "overriden" warning messages when `SuperCallbacks` is included to a class which already has methods conflicting `SuperCallback`'s DSL-methods.
 * 1.1.2 (2019-08-14)
     * [Supported "dirty" checking of instance variable changes](#example-10-dirty-checking-of-instance-variables-changes)
 * 1.0.3 (2019-08-12)
