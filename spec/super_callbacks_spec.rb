@@ -537,8 +537,7 @@ RSpec.describe SuperCallbacks do
 
         include SuperCallbacks
       end
-    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing instance methods: " \
-      "[:before, :instance_variables_before_change]\n"
+    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing instance methods: [:before, :instance_variables_before_change]\n"
     ).to_stdout
   end
 
@@ -555,8 +554,7 @@ RSpec.describe SuperCallbacks do
 
         include SuperCallbacks
       end
-    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing class methods: " \
-      "[:before, :callbacks_prepended_module_instance]\n"
+    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing class methods: [:before, :callbacks_prepended_module_instance]\n"
     ).to_stdout
   end
 end
