@@ -49,10 +49,14 @@ module SuperCallbacks
             super_value = super(*args)
             run_after_callbacks(method_name, *args)
           ensure
-            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].shift
+            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].pop
 
             if Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].empty?
               Thread.current[:super_callbacks_all_instance_variables_before_change].delete(object_id)
+            end
+
+            if Thread.current[:super_callbacks_all_instance_variables_before_change].empty?
+              Thread.current[:super_callbacks_all_instance_variables_before_change] = nil
             end
           end
 
@@ -94,15 +98,19 @@ module SuperCallbacks
             end
 
             Thread.current[:super_callbacks_all_instance_variables_before_change][object_id] << all_instance_variables_before_change
-
+            
             run_before_callbacks(method_name, *args)
             super_value = super(*args)
             run_after_callbacks(method_name, *args)
           ensure
-            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].shift
+            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].pop
 
             if Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].empty?
               Thread.current[:super_callbacks_all_instance_variables_before_change].delete(object_id)
+            end
+
+            if Thread.current[:super_callbacks_all_instance_variables_before_change].empty?
+              Thread.current[:super_callbacks_all_instance_variables_before_change] = nil
             end
           end
 

@@ -495,8 +495,13 @@ RSpec.describe SuperCallbacks do
 
         attr_accessor :bar, :baz
 
+        def initialize
+          @bar = 0
+        end
+
         after :bar= do |arg|
           self.baz = 1
+          self.class.test_string_sequence << instance_variables_before_change
         end
 
         after :baz= do |arg|
@@ -509,7 +514,13 @@ RSpec.describe SuperCallbacks do
       instance.bar = true
       # changed bar from nil to true
       # which triggers baz= callback
-      expect(instance.class.test_string_sequence).to eq [{ :@bar => true }]
+      # then after baz= finished, it goes back to the after :bar=
+      expect(instance.class.test_string_sequence).to eq [
+        { :@bar => true },
+        { :@bar => 0 }
+      ]
+
+      expect(Thread.current[:super_callbacks_all_instance_variables_before_change]).to be nil
     end
   end
 

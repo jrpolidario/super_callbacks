@@ -23,6 +23,8 @@ module SuperCallbacks
     base.send :prepend, Prepended.new
   end
 
+  private
+
   def self.puts_warning_messages_when_methods_already_defined(base)
     overriden_instance_methods = base.instance_methods(false) & (
       (
