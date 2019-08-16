@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Jules Roman B. Polidario']
   spec.email         = ['jules@topfloor.ie']
 
-  spec.summary       = 'Allows `before` and `after` callbacks to any Class. Supports both class and instance level callbacks, conditional callbacks, and inherited callbacks.'
-  spec.description   = 'Allows `before` and `after` callbacks to any Class. Supports both class and instance level callbacks, conditional callbacks, and inherited callbacks. Focuses on performance and flexibility as intended primarily for game development, and event-driven apps.'
+  spec.summary       = 'Allows `before` and `after` callbacks to any Class. Supports dirty checking of instance variables changes, class and instance level callbacks, conditional callbacks, and inherited callbacks.'
+  spec.description   = 'Allows `before` and `after` callbacks to any Class. Supports dirty checking of instance variables changes, class and instance level callbacks, conditional callbacks, and inherited callbacks. Focuses on performance and flexibility as intended primarily for game development, and event-driven apps.'
   spec.homepage      = 'https://github.com/jrpolidario/super_callbacks'
   spec.license       = 'MIT'
 
@@ -19,6 +19,8 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+
+  spec.required_ruby_version = '~> 2.0'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'rake', '~> 10.0'

@@ -393,4 +393,170 @@ RSpec.describe SuperCallbacks do
 
     expect(instance.test_string_sequence).to eq ['Hi', 'sub sub class', 'sub class', 'bar', 'Goodbye']
   end
+
+  context 'after' do
+    it 'supports dirty checking of "changes" of instance variables values' do
+      klass = Class.new do
+        include SuperCallbacks
+
+        attr_accessor :test_string_sequence
+        attr_accessor :bar
+
+        def initialize
+          @test_string_sequence = []
+        end
+
+        after :bar=, :say_hi_first
+
+        def say_hi_first
+          if instance_variable_changed? :@bar
+            @test_string_sequence << 'Hi'
+          end
+        end
+      end
+
+      instance = klass.new
+
+      instance.bar = 1 # changed from nil to 1
+      expect(instance.test_string_sequence).to eq ['Hi']
+
+      instance.bar = 1 # not changed from 1 to 1
+      expect(instance.test_string_sequence).to eq ['Hi']
+
+      instance.bar = 2 # changed from 1 to 2
+      expect(instance.test_string_sequence).to eq ['Hi', 'Hi']
+    end
+  end
+
+  context 'before' do
+    it 'supports dirty checking of "changes" of instance variables values' do
+      klass = Class.new do
+        include SuperCallbacks
+
+        attr_accessor :test_string_sequence
+        attr_accessor :bar, :baz
+
+        def initialize
+          @test_string_sequence = []
+          @baz = 0
+        end
+
+        before :bar= do |arg|
+          if arg == true
+            self.baz += 1
+          end
+        end
+
+        before :bar= do |arg|
+          if instance_variable_changed? :@bar
+            @test_string_sequence << 'Hi'
+          end
+
+          if instance_variable_changed? :@baz
+            @test_string_sequence << 'Hello'
+          end
+        end
+      end
+
+      instance = klass.new
+
+      instance.bar = 1
+      # changed bar from nil to 1
+      #   but instance_variable_changed? :@bar would return false, because it's `before' hook`
+      # not changed baz from 0 to 0
+      expect(instance.test_string_sequence).to eq []
+
+      instance.bar = 1
+      # not changed bar from nil to nil
+      # not changed baz from 0 to 0
+      expect(instance.test_string_sequence).to eq []
+
+      instance.bar = true
+      # changed bar from nil to true
+      #   but instance_variable_changed? :@bar would return false, because it's `before' hook`
+      # changed baz from 0 to 1
+      expect(instance.test_string_sequence).to eq ['Hello']
+
+      instance.bar = true
+      # not changed bar from true to true
+      # changed baz from 1 to 2
+      expect(instance.test_string_sequence).to eq ['Hello', 'Hello']
+    end
+  end
+
+  context 'before' do
+    it 'tracks "changes" independently of callbacks when nestedly called' do
+      klass = Class.new do
+        include SuperCallbacks
+
+        # need this to be a class instance variable to test, otherwise expected StackLevel error
+        @test_string_sequence = []
+        singleton_class.send(:attr_accessor, :test_string_sequence)
+
+        attr_accessor :bar, :baz
+
+        def initialize
+          @bar = 0
+        end
+
+        after :bar= do |arg|
+          self.baz = 1
+          self.class.test_string_sequence << instance_variables_before_change
+        end
+
+        after :baz= do |arg|
+          self.class.test_string_sequence << instance_variables_before_change
+        end
+      end
+
+      instance = klass.new
+
+      instance.bar = true
+      # changed bar from nil to true
+      # which triggers baz= callback
+      # then after baz= finished, it goes back to the after :bar=
+      expect(instance.class.test_string_sequence).to eq [
+        { :@bar => true },
+        { :@bar => 0 }
+      ]
+
+      expect(Thread.current[:super_callbacks_all_instance_variables_before_change]).to be nil
+    end
+  end
+
+  it 'puts warning message when SuperCallback instance methods already defined to prevent unexpected weird behaviours' do
+    klass = Class.new
+
+    expect do
+      klass.class_eval do
+        def before
+        end
+
+        def instance_variables_before_change
+        end
+
+        include SuperCallbacks
+      end
+    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing instance methods: " \
+      "[:before, :instance_variables_before_change]\n"
+    ).to_stdout
+  end
+
+  it 'puts warning message when SuperCallback class methods already defined to prevent unexpected weird behaviours' do
+    klass = Class.new
+
+    expect do
+      klass.class_eval do
+        def self.before
+        end
+
+        def self.callbacks_prepended_module_instance
+        end
+
+        include SuperCallbacks
+      end
+    end.to output("WARN: SuperCallbacks will override #{klass} the following already existing class methods: " \
+      "[:before, :callbacks_prepended_module_instance]\n"
+    ).to_stdout
+  end
 end
