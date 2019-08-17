@@ -407,7 +407,7 @@ foo.bar = 1 # bar is not changed from 1 to 1
 
 ## TODOs
 * when the need already arises, implement `around` (If you have ideas or want to help this part, please feel free to fork or send me a message! :)
-* [Found a new bug I could not solve](https://github.com/jrpolidario/super_callbacks/issues/1). If you have any ideas how to solve this, please feel to submit a merge request! :) At the moment, this is not important to me (yet?) as I develop my game engine, so I'm leaving this here for now, and I'll come back again into this later.
+* Without changing the DSL, try to find a better solution than current one to fix [this bug](https://github.com/jrpolidario/super_callbacks/issues/1). As it required me to write a bit of overhead code via `InheritancePrepender` module.
 
 ## Development
 
