@@ -426,7 +426,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Changelog
 
 * [1.3.0 (2019-08-15)](https://github.com/jrpolidario/super_callbacks/commit/dcc71648d9be06074280c936add04b6b3f921e10)
-    * [Fixed difficult bug: callbacks not in order when method defined in subclass and not in superclass when using inherited callbacks](https://github.com/jrpolidario/super_callbacks/issues/1
+    * [Fixed difficult bug: callbacks not in order when method defined in subclass and not in superclass when using inherited callbacks](https://github.com/jrpolidario/super_callbacks/issues/1)
     * Refactored a lot of code, and added slight overhead. I'm satisfied at the moment until I could find the best solution.
 * 1.2.0 (2019-08-15)
     * [Fixed / Supported Nested "Dirty" Changes on nested callbacks for idempotency (Thread-safe)](https://github.com/jrpolidario/super_callbacks/blob/4e9284e1c6150c6d5da536766d51b4e635bb819d/spec/super_callbacks_spec.rb#L487)
