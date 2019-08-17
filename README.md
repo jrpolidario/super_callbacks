@@ -23,7 +23,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'super_callbacks', '~> 1.2'
+gem 'super_callbacks', '~> 1.3'
 ```
 
 And then execute:
