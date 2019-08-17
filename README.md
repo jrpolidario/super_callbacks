@@ -144,7 +144,7 @@ foo.bar
 # => 'bar!'
 ```
 
-*Notice above multiple callbacks are supported, and that they are called in firt-come-first-served order.*
+*Notice above multiple callbacks are supported, and that they are called in first-come-first-served order.*
 
 *Above uses `before`, but works similarly with `after`*
 
@@ -425,7 +425,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
-* [1.3.0 (2019-08-15)](https://github.com/jrpolidario/super_callbacks/commit/dcc71648d9be06074280c936add04b6b3f921e10)
+* [1.3.1 (2019-08-15)](https://github.com/jrpolidario/super_callbacks/commit/dcc71648d9be06074280c936add04b6b3f921e10)
     * [Fixed difficult bug: callbacks not in order when method defined in subclass and not in superclass when using inherited callbacks](https://github.com/jrpolidario/super_callbacks/issues/1)
     * Refactored a lot of code, and added slight overhead. I'm satisfied at the moment until I could find the best solution.
 * 1.2.0 (2019-08-15)
