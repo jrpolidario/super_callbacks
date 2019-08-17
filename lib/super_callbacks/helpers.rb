@@ -19,5 +19,25 @@ module SuperCallbacks
         end
       end
     end
+
+    def self.deep_array_and_hash_dup(enumerables, levels_left = nil)
+      return enumerables if levels_left && levels_left == 0
+
+      if enumerables.is_a?(Array)
+        enumerables = enumerables.dup
+        enumerables.each_with_index do |enumerable, index|
+          enumerables[index] = deep_array_and_hash_dup(enumerable, levels_left.nil? ? nil : levels_left - 1)
+        end
+        enumerables
+      elsif enumerables.is_a?(Hash)
+        enumerables = enumerables.dup
+        enumerables.each do |key, value|
+          enumerables[key] = deep_array_and_hash_dup(value, levels_left.nil? ? nil : levels_left - 1)
+        end
+        enumerables
+      else
+        enumerables
+      end
+    end
   end
 end

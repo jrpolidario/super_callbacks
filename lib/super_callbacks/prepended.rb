@@ -5,5 +5,10 @@
 # `super` inside it, which then will also call the "real" method defined in the target class.
 module SuperCallbacks
   class Prepended < Module
+    attr_accessor :base
+
+    def initialize(base)
+      @base = base
+    end
   end
 end

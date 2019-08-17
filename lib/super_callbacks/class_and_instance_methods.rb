@@ -29,11 +29,13 @@ module SuperCallbacks
       self.before_callbacks[method_name.to_sym] ||= []
       self.before_callbacks[method_name.to_sym] << [callback_method_name_or_proc, options[:if]]
 
-      _callbacks_prepended_module_instance = callbacks_prepended_module_instance
+      super_callbacks_prepended = self.super_callbacks_prepended
 
       # dont redefine, to save cpu cycles
-      unless _callbacks_prepended_module_instance.method_defined? method_name
-        _callbacks_prepended_module_instance.send(:define_method, method_name) do |*args|
+      unless super_callbacks_prepended.instance_methods(false).include? method_name
+        super_callbacks_prepended.send(:define_method, method_name) do |*args|
+          return super(*args) if self.class.super_callbacks_prepended != super_callbacks_prepended
+
           begin
             # refactored to use Thread.current for thread-safetiness
             Thread.current[:super_callbacks_all_instance_variables_before_change] ||= {}
@@ -83,11 +85,13 @@ module SuperCallbacks
       self.after_callbacks[method_name.to_sym] ||= []
       self.after_callbacks[method_name.to_sym] << [callback_method_name_or_proc, options[:if]]
 
-      _callbacks_prepended_module_instance = callbacks_prepended_module_instance
+      super_callbacks_prepended = self.super_callbacks_prepended
 
       # dont redefine, to save cpu cycles
-      unless _callbacks_prepended_module_instance.method_defined? method_name
-        _callbacks_prepended_module_instance.send(:define_method, method_name) do |*args|
+      unless super_callbacks_prepended.instance_methods(false).include? method_name
+        super_callbacks_prepended.send(:define_method, method_name) do |*args|
+          return super(*args) if self.class.super_callbacks_prepended != super_callbacks_prepended
+
           begin
             # refactored to use Thread.current for thread-safetiness
             Thread.current[:super_callbacks_all_instance_variables_before_change] ||= {}

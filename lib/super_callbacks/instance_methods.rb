@@ -1,21 +1,13 @@
 module SuperCallbacks
   # The methods defined here will be available "class" methods for any class where SuperCallbacks is included
   module InstanceMethods
-    # TODO: optimize by instead of dynamically getting all_ancestral_after_callbacks on runtime
-    # set them immediately when `include` is called on Base class
     def run_before_callbacks(method_name, *args)
-      all_ancestral_before_callbacks = self.class.ancestors.reverse.each_with_object({}) do |ancestor, hash|
-        SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays!(
-          hash,
-          ancestor.instance_variable_get(:@before_callbacks) || {}
-        )
-      end
-
-      singleton_class_before_callbacks = instance_variable_get(:@before_callbacks) || {}
+      class_before_callbacks = self.class.instance_variable_get(:@before_callbacks) || {}
+      instance_before_callbacks = instance_variable_get(:@before_callbacks) || {}
 
       all_before_callbacks = SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays(
-        all_ancestral_before_callbacks,
-        singleton_class_before_callbacks
+        class_before_callbacks,
+        instance_before_callbacks
       )
 
       all_before_callbacks_on_method = all_before_callbacks[method_name] || []
@@ -37,21 +29,13 @@ module SuperCallbacks
       end
     end
 
-    # TODO: optimize by instead of dynamically getting all_ancestral_after_callbacks on runtime
-    # set them immediately when `include` is called on Base class
     def run_after_callbacks(method_name, *args)
-      all_ancestral_after_callbacks = self.class.ancestors.reverse.each_with_object({}) do |ancestor, hash|
-        SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays!(
-          hash,
-          ancestor.instance_variable_get(:@after_callbacks) || {}
-        )
-      end
-
-      singleton_class_after_callbacks = instance_variable_get(:@after_callbacks) || {}
+      class_after_callbacks = self.class.instance_variable_get(:@after_callbacks) || {}
+      instance_after_callbacks = instance_variable_get(:@after_callbacks) || {}
 
       all_after_callbacks = SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays(
-        all_ancestral_after_callbacks,
-        singleton_class_after_callbacks
+        class_after_callbacks,
+        instance_after_callbacks
       )
 
       all_after_callbacks_on_method = all_after_callbacks[method_name] || []
@@ -73,17 +57,15 @@ module SuperCallbacks
       end
     end
 
-    private
+    def super_callbacks_prepended
+      _super_callbacks_prepended = self.singleton_class.ancestors.reverse.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
 
-    def callbacks_prepended_module_instance
-      _callbacks_prepended_module_instance = self.singleton_class.ancestors.reverse.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
-
-      if _callbacks_prepended_module_instance.nil?
+      if _super_callbacks_prepended.nil?
         self.singleton_class.prepend SuperCallbacks::Prepended
-        _callbacks_prepended_module_instance = self.singleton_class.ancestors.reverse.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
+        _super_callbacks_prepended = self.singleton_class.ancestors.reverse.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
       end
 
-      _callbacks_prepended_module_instance
+      _super_callbacks_prepended
     end
   end
 end

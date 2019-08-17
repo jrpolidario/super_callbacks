@@ -20,32 +20,75 @@ module SuperCallbacks
     base.send :include, InstanceMethods
     base.extend ClassAndInstanceMethods
     base.send :include, ClassAndInstanceMethods
-    base.send :prepend, Prepended.new
 
+    base.singleton_class.send :attr_accessor, :super_callbacks_prepended
+    base.super_callbacks_prepended = Prepended.new(base)
+    base.send :prepend, base.super_callbacks_prepended
+
+    # needed to fix bug while still support nested callbacks of which methods
+    # are defined in the subclasses
     base.singleton_class.send :prepend, InheritancePrepender
   end
 
   module InheritancePrepender
     def inherited(subclass)
-      first_callbacks_prepended_module_instance = subclass.ancestors.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
-      subclass.send :prepend, first_callbacks_prepended_module_instance.clone
+      # need to make a copy of the last SuperCallbacks::Prepended module in the ancestor chain
+      # and then `prepend` that module into the newly defined subclass
+      first_callbacks_prepended_module_instance = self.ancestors.detect { |ancestor| ancestor.is_a? SuperCallbacks::Prepended }
 
-      all_ancestral_before_callbacks = subclass.ancestors.reverse.each_with_object({}) do |ancestor, hash|
-        SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays!(
-          hash,
-          ancestor.instance_variable_get(:@before_callbacks) || {}
-        )
+      new_super_callbacks_prepended = Prepended.new(subclass)
+
+      # ... which could be done via redefining the methods first...
+      (
+        first_callbacks_prepended_module_instance.instance_methods(false) +
+        first_callbacks_prepended_module_instance.private_instance_methods(false)
+      ).each do |method_name|
+        new_super_callbacks_prepended.send(:define_method, method_name) do |*args|
+          # this is the reason why this method needs to be redefined, and not just simply
+          # copied from the last SuperCallbacks::Prepended module;
+          # because the callback must only run once on the outermost prepended module
+          # for details, see spec 'runs the callbacks in correct order when the method is defined in the subclass'
+          return super(*args) if self.class.super_callbacks_prepended != subclass.super_callbacks_prepended
+
+          begin
+            # refactored to use Thread.current for thread-safetiness
+            Thread.current[:super_callbacks_all_instance_variables_before_change] ||= {}
+            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id] ||= []
+
+            all_instance_variables_before_change = instance_variables.each_with_object({}) do |instance_variable, hash|
+              hash[instance_variable] = instance_variable_get(instance_variable)
+            end
+
+            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id] << all_instance_variables_before_change
+
+            run_before_callbacks(method_name, *args)
+            super_value = super(*args)
+            run_after_callbacks(method_name, *args)
+          ensure
+            Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].pop
+
+            if Thread.current[:super_callbacks_all_instance_variables_before_change][object_id].empty?
+              Thread.current[:super_callbacks_all_instance_variables_before_change].delete(object_id)
+            end
+
+            if Thread.current[:super_callbacks_all_instance_variables_before_change].empty?
+              Thread.current[:super_callbacks_all_instance_variables_before_change] = nil
+            end
+          end
+
+          super_value
+        end
       end
 
-      all_ancestral_after_callbacks = subclass.ancestors.reverse.each_with_object({}) do |ancestor, hash|
-        SuperCallbacks::Helpers.deep_merge_hashes_and_combine_arrays!(
-          hash,
-          ancestor.instance_variable_get(:@after_callbacks) || {}
-        )
-      end
+      subclass.singleton_class.send :attr_accessor, :super_callbacks_prepended
+      subclass.super_callbacks_prepended = new_super_callbacks_prepended
+      subclass.send :prepend, new_super_callbacks_prepended
 
-      subclass.instance_variable_set(:@before_callbacks, all_ancestral_before_callbacks)
-      subclass.instance_variable_set(:@after_callbacks, all_ancestral_after_callbacks)
+      copied_before_callbacks = Helpers.deep_array_and_hash_dup(first_callbacks_prepended_module_instance.base.before_callbacks)
+      copied_after_callbacks = Helpers.deep_array_and_hash_dup(first_callbacks_prepended_module_instance.base.after_callbacks)
+
+      subclass.instance_variable_set(:@before_callbacks, copied_before_callbacks)
+      subclass.instance_variable_set(:@after_callbacks, copied_after_callbacks)
 
       subclass.singleton_class.send :prepend, InheritancePrepender
       super

@@ -15,7 +15,6 @@ RSpec.describe SuperCallbacks do
           end
 
           def say_hi_first
-            puts 'Hi'
           end
         end
       end.to raise_error ArgumentError
@@ -30,7 +29,6 @@ RSpec.describe SuperCallbacks do
           before! :bar, :say_hi_first
 
           def say_hi_first
-            puts 'Hi'
           end
         end
       end.to_not raise_error
@@ -49,7 +47,6 @@ RSpec.describe SuperCallbacks do
           end
 
           def say_hi_first
-            puts 'Hi'
           end
         end
       end.to raise_error ArgumentError
@@ -64,7 +61,6 @@ RSpec.describe SuperCallbacks do
           after! :bar, :say_hi_first
 
           def say_hi_first
-            puts 'Hi'
           end
         end
       end.to_not raise_error
@@ -80,7 +76,6 @@ RSpec.describe SuperCallbacks do
           before :bar, :say_hi_first
 
           def say_hi_first
-            puts 'Hi'
           end
         end
       end.to_not raise_error
@@ -96,7 +91,6 @@ RSpec.describe SuperCallbacks do
           after :bar, :say_hi_first
 
           def say_hi_first
-            puts 'Hi'
           end
         end
       end.to_not raise_error
@@ -377,14 +371,14 @@ RSpec.describe SuperCallbacks do
     sub_class = Class.new(base_class) do
       def bar
         @test_string_sequence << 'sub class'
-        # super
+        super
       end
     end
 
     sub_sub_class = Class.new(sub_class) do
       def bar
         @test_string_sequence << 'sub sub class'
-        # super
+        super
       end
     end
 
@@ -550,13 +544,90 @@ RSpec.describe SuperCallbacks do
         def self.before
         end
 
-        def self.callbacks_prepended_module_instance
+        def self.instance_variables_before_change
         end
 
         include SuperCallbacks
       end
     end.to output("WARN: SuperCallbacks will override #{klass} the following already existing class methods: " \
-      "[:before, :callbacks_prepended_module_instance]\n"
+      "[:before, :instance_variables_before_change]\n"
     ).to_stdout
+  end
+
+  it 'should have mutually exclusive before_callbacks for multiple subclasses' do
+    base_class = Class.new do
+      include SuperCallbacks
+
+      def self.name
+        'Parent'
+      end
+
+      attr_accessor :test_string_sequence
+      attr_accessor :bar
+
+      def initialize
+        @test_string_sequence = []
+      end
+
+      before :bar do
+        @test_string_sequence << 'Hi'
+      end
+    end
+
+    sub_class_1 = Class.new(base_class) do
+      def self.name
+        'ChildA'
+      end
+
+      before :bar do
+        @test_string_sequence << 'Hello Sub Class 1'
+      end
+    end
+
+    sub_class_2 = Class.new(base_class) do
+      def self.name
+        'ChildB'
+      end
+
+      before :bar do
+        @test_string_sequence << 'Hello Sub Class 2'
+      end
+    end
+
+    sub_class_3 = Class.new(sub_class_1) do
+      def self.name
+        'ChildC'
+      end
+
+      before :bar do
+        @test_string_sequence << 'Hello Sub Class 3'
+      end
+    end
+
+    instance_1 = sub_class_1.new
+    instance_2 = sub_class_2.new
+    instance_3 = sub_class_3.new
+
+    expect(instance_1.test_string_sequence).to eq []
+    expect(instance_2.test_string_sequence).to eq []
+    expect(instance_3.test_string_sequence).to eq []
+
+    instance_1.bar
+
+    expect(instance_1.test_string_sequence).to eq ['Hi', 'Hello Sub Class 1']
+    expect(instance_2.test_string_sequence).to eq []
+    expect(instance_3.test_string_sequence).to eq []
+
+    instance_2.bar
+
+    expect(instance_1.test_string_sequence).to eq ['Hi', 'Hello Sub Class 1']
+    expect(instance_2.test_string_sequence).to eq ['Hi', 'Hello Sub Class 2']
+    expect(instance_3.test_string_sequence).to eq []
+
+    instance_3.bar
+
+    expect(instance_1.test_string_sequence).to eq ['Hi', 'Hello Sub Class 1']
+    expect(instance_2.test_string_sequence).to eq ['Hi', 'Hello Sub Class 2']
+    expect(instance_3.test_string_sequence).to eq ['Hi', 'Hello Sub Class 1', 'Hello Sub Class 3']
   end
 end
