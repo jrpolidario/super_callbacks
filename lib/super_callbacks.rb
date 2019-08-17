@@ -38,6 +38,9 @@ module SuperCallbacks
 
       new_super_callbacks_prepended = Prepended.new(subclass)
 
+      subclass.singleton_class.send :attr_accessor, :super_callbacks_prepended
+      subclass.super_callbacks_prepended = new_super_callbacks_prepended
+
       # ... which could be done via redefining the methods first...
       (
         first_callbacks_prepended_module_instance.instance_methods(false) +
@@ -80,8 +83,6 @@ module SuperCallbacks
         end
       end
 
-      subclass.singleton_class.send :attr_accessor, :super_callbacks_prepended
-      subclass.super_callbacks_prepended = new_super_callbacks_prepended
       subclass.send :prepend, new_super_callbacks_prepended
 
       copied_before_callbacks = Helpers.deep_array_and_hash_dup(first_callbacks_prepended_module_instance.base.before_callbacks)
@@ -90,7 +91,7 @@ module SuperCallbacks
       subclass.instance_variable_set(:@before_callbacks, copied_before_callbacks)
       subclass.instance_variable_set(:@after_callbacks, copied_after_callbacks)
 
-      subclass.singleton_class.send :prepend, InheritancePrepender
+      # subclass.singleton_class.send :prepend, InheritancePrepender
       super
     end
   end

@@ -382,10 +382,17 @@ RSpec.describe SuperCallbacks do
       end
     end
 
-    instance = sub_sub_class.new
+    sub_sub_sub_class = Class.new(sub_sub_class) do
+      def bar
+        @test_string_sequence << 'sub sub sub class'
+        super
+      end
+    end
+
+    instance = sub_sub_sub_class.new
     instance.bar
 
-    expect(instance.test_string_sequence).to eq ['Hi', 'sub sub class', 'sub class', 'bar', 'Goodbye']
+    expect(instance.test_string_sequence).to eq ['Hi', 'sub sub sub class', 'sub sub class', 'sub class', 'bar', 'Goodbye']
   end
 
   context 'after' do
