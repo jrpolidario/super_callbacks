@@ -1,5 +1,5 @@
 module SuperCallbacks
-  # The methods defined here will be available "class" methods for any class where SuperCallbacks is included
+  # The methods defined here will be available "instance" methods for any class where SuperCallbacks is included
   module InstanceMethods
     def run_before_callbacks(method_name, *args)
       class_before_callbacks = self.class.instance_variable_get(:@before_callbacks) || {}

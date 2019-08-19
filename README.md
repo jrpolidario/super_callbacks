@@ -8,7 +8,9 @@
 * Supports both class and instance level callbacks
 * Supports conditional callbacks
 * Supports inherited callbacks; hence named "Super", get it? :D haha!
+
 ---
+
 * Focuses on performance and flexibility as intended primarily for game development, and event-driven apps
 * Standalone; no other gem dependencies
 * `super_callbacks` is the upgraded version of my other repo [`dragonruby_callbacks`](https://github.com/jrpolidario/dragonruby_callbacks)
