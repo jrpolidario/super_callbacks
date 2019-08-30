@@ -403,7 +403,7 @@ foo.bar = 1 # bar is not changed from 1 to 1
 # => 1
 ```
 
-*Notice above on the second time `foo.bar = 1` is called, "new value" was no longer "puts", because `@bar` didn't change from 1 to 1. You can only use `instance_variables_before_change`, `instance_variable_before_change` and `instance_variable_changed?` inside the SuperCallback cycle; otherwise you will get a `"You cannot call this method outside the SuperCallback cycle"` error.*
+*Notice above on the second time `foo.bar = 1` is called, "new value" was no longer "puts", because `@bar` didn't change from 1 to 1. You can only use `instance_variables_before_change`, `instance_variable_before_change` and `instance_variable_changed?` inside the `SuperCallbacks` cycle; otherwise you will get a `"You cannot call this method outside the SuperCallbacks cycle"` error.*
 
 *Above uses `after!`, but works similarly with `before!`*
 
