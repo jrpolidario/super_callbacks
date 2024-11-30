@@ -18,7 +18,7 @@
 
 ## Dependencies
 
-* **Ruby ~> 2.0**
+* **Ruby 2 or Ruby 3**
 
 ## Installation
 
