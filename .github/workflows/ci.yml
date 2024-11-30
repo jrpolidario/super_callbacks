@@ -9,12 +9,11 @@ on:
       - master
 
 jobs:
-  test:
+  ruby_legacy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.0.0', '2.2.10', '2.3.8', '2.4.10', '2.5.9', '2.6.10', '2.7.8', '3.0.0', '3.1.6', '3.2.6', '3.3.6']
-
+        ruby-version: ['2.0.0', '2.2.10']
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -25,7 +24,31 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           cache: bundler
 
-      - name: Install Bundler
+      - name: Install Bundler 1.6
+        run: gem install bundler -v 1.6
+
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Run tests
+        run: bundle exec rake test
+
+  ruby_current:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: ['2.3.8', '2.4.10', '2.5.9', '2.6.10', '2.7.8', '3.0.0', '3.1.6', '3.2.6', '3.3.6'] 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          cache: bundler
+
+      - name: Install Bundler 2.5.23
         run: gem install bundler -v 2.5.23
 
       - name: Install dependencies
