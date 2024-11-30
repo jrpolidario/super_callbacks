@@ -427,6 +427,8 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Changelog
 
+* [1.3.2 (2024-11-30)](https://github.com/jrpolidario/super_callbacks/compare/8ae5be07d44633b942e5751b076cc7f0cb824045...dce3b148d7ec26545fa98e4ea3c01adcc8cab107)
+    * Bump support of ruby version to ~> 3.0
 * [1.3.1 (2019-08-15)](https://github.com/jrpolidario/super_callbacks/commit/dcc71648d9be06074280c936add04b6b3f921e10)
     * [Fixed difficult bug: callbacks not in order when method defined in subclass and not in superclass when using inherited callbacks](https://github.com/jrpolidario/super_callbacks/issues/1)
     * Refactored a lot of code, and added slight overhead. I'm satisfied at the moment until I could find the best solution.
