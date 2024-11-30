@@ -1,6 +1,6 @@
 # SuperCallbacks
 
-![Build Status](https://github.com/jrpolidario/super_callbacks/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/jrpolidario/super_callbacks/actions/workflows/ci.yml/badge.svg)](https://github.com/jrpolidario/super_callbacks/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/super_callbacks.svg)](https://badge.fury.io/rb/super_callbacks)
 
 * Allows `before` and `after` callbacks to any Class.
